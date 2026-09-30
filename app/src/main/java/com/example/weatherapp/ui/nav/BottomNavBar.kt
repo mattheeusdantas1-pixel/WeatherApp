@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -28,14 +29,11 @@ fun BottomNavBar(navController: NavHostController, items: List<BottomNavItem>) {
                 selected = currentRoute?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Volta pilha de navegação até HomePage (startDest).
-                        navController.graph.startDestinationRoute?.let {
-                            popUpTo(it) {
-                                saveState = true
-                            }
-                            restoreState = true
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                         launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )
