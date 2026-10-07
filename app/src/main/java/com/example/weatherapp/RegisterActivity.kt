@@ -1,7 +1,6 @@
 package com.example.weatherapp
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -33,14 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
-class LoginActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WeatherAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginPage(modifier = Modifier.padding(innerPadding))
+                    RegisterPage(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -49,9 +48,11 @@ class LoginActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPage(modifier: Modifier = Modifier) {
+fun RegisterPage(modifier: Modifier = Modifier) {
+    var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
 
     val fieldModifier = Modifier.fillMaxWidth(fraction = 0.9f)
@@ -62,22 +63,37 @@ fun LoginPage(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Bem-vindo/a!",
+            text = "Crie sua conta",
             fontSize = 24.sp
         )
         Spacer(modifier = Modifier.size(24.dp))
         OutlinedTextField(
+            value = name,
+            label = { Text(text = "Nome") },
+            modifier = fieldModifier,
+            onValueChange = { name = it }
+        )
+        Spacer(modifier = Modifier.size(12.dp))
+        OutlinedTextField(
             value = email,
-            label = { Text(text = "Digite seu e-mail") },
+            label = { Text(text = "E-mail") },
             modifier = fieldModifier,
             onValueChange = { email = it }
         )
         Spacer(modifier = Modifier.size(12.dp))
         OutlinedTextField(
             value = password,
-            label = { Text(text = "Digite sua senha") },
+            label = { Text(text = "Senha") },
             modifier = fieldModifier,
             onValueChange = { password = it },
+            visualTransformation = PasswordVisualTransformation()
+        )
+        Spacer(modifier = Modifier.size(12.dp))
+        OutlinedTextField(
+            value = confirmPassword,
+            label = { Text(text = "Confirmar Senha") },
+            modifier = fieldModifier,
+            onValueChange = { confirmPassword = it },
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.size(24.dp))
@@ -87,30 +103,22 @@ fun LoginPage(modifier: Modifier = Modifier) {
         ) {
             Button(
                 onClick = {
-                    Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
-                    activity.startActivity(
-                        Intent(activity, MainActivity::class.java).setFlags(
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        )
-                    )
+                    Toast.makeText(activity, "Registro realizado com sucesso!", Toast.LENGTH_LONG).show()
+                    activity.finish()
                 },
-                enabled = email.isNotEmpty() && password.isNotEmpty()
+                enabled = name.isNotEmpty() && email.isNotEmpty() && 
+                          password.isNotEmpty() && confirmPassword.isNotEmpty() &&
+                          password == confirmPassword
             ) {
-                Text("Login")
+                Text("Confirmar")
             }
             Button(
-                onClick = { email = ""; password = "" }
+                onClick = { 
+                    name = ""; email = ""; password = ""; confirmPassword = "" 
+                }
             ) {
                 Text("Limpar")
             }
-        }
-        Spacer(modifier = Modifier.size(12.dp))
-        Button(
-            onClick = {
-                activity.startActivity(Intent(activity, RegisterActivity::class.java))
-            }
-        ) {
-            Text("Registrar")
         }
     }
 }
