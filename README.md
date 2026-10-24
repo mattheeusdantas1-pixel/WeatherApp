@@ -10,7 +10,7 @@ Aluno: Mattheeus Dantas
 
 
 
-O app foi construído de forma incremental: cada prática continua a anterior, então o código atual contém as Práticas 1, 2 e 3.
+O app foi construído de forma incremental: cada prática continua a anterior, então o código atual contém as Práticas.
 
 
 
