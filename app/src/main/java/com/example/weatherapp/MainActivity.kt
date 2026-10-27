@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,9 @@ class MainActivity : ComponentActivity() {
                 contract = ActivityResultContracts.RequestPermission(),
                 onResult = {}
             )
+            LaunchedEffect(Unit){
+                launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
 
             WeatherAppTheme {
                 if (showDialog) {
@@ -93,11 +97,14 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         MainNavHost(navController = navController, viewModel = viewModel)
                     }
+
                 }
+
             }
         }
     }
+
+
 }

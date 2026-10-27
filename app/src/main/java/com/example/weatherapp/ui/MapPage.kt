@@ -19,6 +19,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.runtime.key
 
 @Composable
 fun MapPage(
@@ -54,8 +55,10 @@ fun MapPage(
     ) {
         viewModel.cities.forEach {
             if (it.location != null) {
-                val markerState = remember { MarkerState(position = it.location) }
-                Marker(state = markerState, title = it.name, snippet = "${it.location}")
+                key(it.name) {
+                    val markerState = remember { MarkerState(position = it.location) }
+                    Marker(state = markerState, title = it.name, snippet = "${it.location}")
+                }
             }
         }
 

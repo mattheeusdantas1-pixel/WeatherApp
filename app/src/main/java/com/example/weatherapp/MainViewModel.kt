@@ -19,6 +19,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun add(name: String, location: LatLng? = null) {
-        _cities.add(City(name = name, location = location))
+        if (_cities.none { it.name == name })
+            _cities.add(City(name = name, location = location))
     }
 }
