@@ -61,6 +61,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
 
+    // Pratica 6: Firebase Firestore
+    implementation("com.google.firebase:firebase-firestore")
+
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     androidTestImplementation(platform(libs.androidx.compose.bom))
