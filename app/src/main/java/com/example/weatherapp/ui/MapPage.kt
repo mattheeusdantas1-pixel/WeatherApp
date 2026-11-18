@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.example.weatherapp.MainViewModel
+import com.example.weatherapp.model.Weather
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -54,8 +55,10 @@ fun MapPage(
         viewModel.cities.forEach {
             if (it.location != null) {
                 key(it.name) {
+                    val weather = viewModel.weather(it.name)
+                    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
                     val markerState = remember { MarkerState(position = it.location) }
-                    Marker(state = markerState, title = it.name, snippet = "${it.location}")
+                    Marker(state = markerState, title = it.name, snippet = desc)
                 }
             }
         }

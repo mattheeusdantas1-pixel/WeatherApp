@@ -27,14 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.MainViewModel
 import com.example.weatherapp.model.City
+import com.example.weatherapp.model.Weather
 
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -50,7 +53,7 @@ fun CityItem(
                 fontSize = 24.sp
             )
             Text(
-                text = city.weather ?: "Carregando clima...",
+                text = desc,
                 fontSize = 16.sp
             )
         }
@@ -76,6 +79,7 @@ fun ListPage(
         items(cityList, key = { it.name }) { city ->
             CityItem(
                 city = city,
+                weather = viewModel.weather(city.name),
                 onClose = {
                     viewModel.remove(city)
                 },

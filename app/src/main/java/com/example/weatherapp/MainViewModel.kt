@@ -1,22 +1,29 @@
 package com.example.weatherapp
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.api.WeatherService
+import com.example.weatherapp.api.toWeather
 import com.example.weatherapp.db.fb.FBCity
 import com.example.weatherapp.db.fb.FBDatabase
 import com.example.weatherapp.db.fb.FBUser
 import com.example.weatherapp.db.fb.toFBCity
 import com.example.weatherapp.model.City
 import com.example.weatherapp.model.User
+import com.example.weatherapp.model.Weather
 import com.google.android.gms.maps.model.LatLng
 
 class MainViewModel(private val db: FBDatabase, private val service: WeatherService) : ViewModel(), FBDatabase.Listener {
-    private val _cities = mutableStateListOf<City>()
-    val cities
-        get() = _cities.toList()
+    private val _cities = mutableStateMapOf<String, City>()
+    val cities: List<City> by derivedStateOf {
+        _cities.values.toList().sortedBy { it.name }
+    }
+
+    private val _weather = mutableStateMapOf<String, Weather>()
 
     private val _user = mutableStateOf<User?>(null)
     val user: User?
@@ -54,16 +61,29 @@ class MainViewModel(private val db: FBDatabase, private val service: WeatherServ
     }
 
     override fun onCityAdded(city: FBCity) {
-        val newCity = city.toCity()
-        if (_cities.none { it.name == newCity.name })
-            _cities.add(newCity)
+        _cities[city.name!!] = city.toCity()
     }
 
     override fun onCityUpdated(city: FBCity) {
+        _cities.remove(city.name)
+        _cities[city.name!!] = city.toCity()
     }
 
     override fun onCityRemoved(city: FBCity) {
-        _cities.removeAll { it.name == city.name }
+        _cities.remove(city.name)
+    }
+
+    fun weather(name: String) = _weather.getOrPut(name) {
+        loadWeather(name)
+        Weather.LOADING
+    }
+
+    private fun loadWeather(name: String) {
+        service.getWeather(name) { apiWeather ->
+            apiWeather?.let {
+                _weather[name] = apiWeather.toWeather()
+            }
+        }
     }
 }
 
