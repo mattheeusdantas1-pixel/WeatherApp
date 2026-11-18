@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
                             BottomNavItem.ListButton,
                             BottomNavItem.MapButton,
                         )
-                        BottomNavBar(navController = navController, items)
+                        BottomNavBar(viewModel, navController, items)
                     },
                     floatingActionButton = {
                         if (showButton) {
@@ -115,6 +115,17 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(navController = navController, viewModel = viewModel)
+                    }
+                    LaunchedEffect(viewModel.page) {
+                        navController.navigate(viewModel.page) {
+                            navController.graph.startDestinationRoute?.let {
+                                popUpTo(it) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
 
                 }
