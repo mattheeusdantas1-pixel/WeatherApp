@@ -76,6 +76,8 @@ dependencies {
     // Pratica 7: Retrofit
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    // Pratica 9: Coil (imagens da rede)
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
